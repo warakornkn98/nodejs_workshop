@@ -4,6 +4,8 @@ var UserSchema = require("../models/user.model.js");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const tokenMiddleware = require("../middlewares/token.middleware.js");
+require("dotenv").config();
+const JWT_secret = process.env.JWT_secret
 
 // Get all users
 router.get("/", async function (req, res, next) {
@@ -87,7 +89,7 @@ router.post("/login", async function (req, res, next) {
 
     const token = jwt.sign(
       { username: user.username, role: user.role },
-      "secret",
+      JWT_secret,
       { expiresIn: "1h" }
     );
 

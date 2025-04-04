@@ -3,9 +3,9 @@ const { Schema } = mongoose;
 
 const productSchema = new Schema(
   {
-    username: { type: String },
+    created_by: { type: String },
     product_name: { type: String },
-    price: { type: String },
+    price: { type: Number },
     quantity: { type: Number },
   },
   {
