@@ -15,14 +15,12 @@ router.get("/", async function (req, res, next) {
     res.status(200).send({
       success: true,
       message: "Success",
-      error:[],
       data: users,
     });
   } catch (error) {
     res.status(500).send({
       success: false,
       message: "Server Timeout",
-      error:[],
       data: [],
     });
   }
@@ -40,7 +38,6 @@ router.post("/register", async function (req, res, next) {
       return res.status(400).send({
         success: false,
         message: "User Already Exists",
-        error:[],
         data: [],
       });
     }
@@ -55,14 +52,12 @@ router.post("/register", async function (req, res, next) {
     res.status(200).send({
       success: true,
       message: "Success",
-      error:[],
       data: user,
     });
   } catch (error) {
     res.status(500).send({
       success: false,
       message: "Server Timeout",
-      error:[],
       data: [],
     });
   }
@@ -76,34 +71,44 @@ router.post("/login", async function (req, res, next) {
     let user = await UserSchema.findOne({ username });
 
     if (!user) {
-      return res.status(400).send("No User Found");
+      return res.status(400).send({
+        success: false,
+        message: "User Not Found",
+        data: [],
+      });
     }
 
     if (user.role == null) {
-      return res.status(400).send("User Not Approved");
+      return res.status(400).send({
+        success: false,
+        message: "User Not Approved",
+        data: [],
+      });
     }
 
     if (bcrypt.compareSync(password, user.password) === false) {
-      return res.status(401).send("Login Failed");
+      return res.status(401).send({
+        success: false,
+        message: "Invalid Password",
+        data: [],
+      });
     }
 
     const token = jwt.sign(
       { username: user.username, role: user.role },
       JWT_secret,
-      { expiresIn: "1h" }
+      { expiresIn: "24h" }
     );
 
     res.status(200).send({
       success: true,
       message: "Success",
-      error:[],
       data: [user,token],
     });
   } catch (error) {
     res.status(500).send({
       success: false,
       message: "Server Timeout",
-      error:[],
       data: [],
     });
   }
@@ -119,7 +124,6 @@ router.put("/:id/approve",tokenMiddleware, async function (req, res, next) {
       return res.status(401).send({
         success: false,
         message: "Unauthorized",
-        error:[],
         data: [],
       });
     }
@@ -129,14 +133,12 @@ router.put("/:id/approve",tokenMiddleware, async function (req, res, next) {
     res.status(200).send({
       success: true,
       message: "Success",
-      error:[],
       data: user,
     });
   } catch (error) {
     res.status(500).send({
       success: false,
       message: "Server Timeout",
-      error:[],
       data: [],
     });
   }

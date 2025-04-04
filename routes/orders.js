@@ -13,14 +13,12 @@ router.get("/", async function (req, res, next) {
         res.status(200).send({
             success: true,
             message: "Success",
-            error: [],
             data: orders,
         });
     }catch(error){
         res.status(500).send({
             success: false,
             message: "Server Timeout",
-            error: [],
             data: [],
         });
     }

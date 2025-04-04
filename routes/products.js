@@ -8,21 +8,20 @@ const tokenMiddleware = require("../middlewares/token.middleware.js");
 const productMiddleware = require("../middlewares/product.middleware.js");
 
 // Get all products
-router.get("/", async function (req, res, next) {
+router.get("/",tokenMiddleware, async function (req, res, next) {
   try {
-    let products = await ProductSchema.find({});
+    
+    let products = await ProductSchema.find({created_by: req.decoded.username});
 
     res.status(200).send({
       success: true,
       message: "Success",
-      error: [],
       data: products,
     });
   } catch (error) {
     res.status(500).send({
       success: false,
       message: "Server Timeout",
-      error: [],
       data: [],
     });
   }
@@ -48,14 +47,12 @@ router.post("/", tokenMiddleware, async function (req, res, next) {
     res.status(200).send({
       success: true,
       message: "Success",
-      error: [],
       data: product,
     });
   } catch (error) {
     res.status(500).send({
       success: false,
       message: "Server Timeout",
-      error: [],
       data: [],
     });
   }
@@ -92,14 +89,12 @@ router.put("/:id",[tokenMiddleware,productMiddleware ], async function (req, res
     res.status(200).send({
       success: true,
       message: "Success",
-      error: [],
       data: product,
     });
   } catch (error) {
     res.status(500).send({
       success: false,
       message: "Server Timeout",
-      error: [],
       data: [],
     });
   }
@@ -115,14 +110,12 @@ router.delete("/:id",[tokenMiddleware,productMiddleware ], async function (req, 
     res.status(200).send({
       success: true,
       message: "Success",
-      error: [],
       data: product,
     });
   } catch (error) {
     res.status(500).send({
       success: false,
       message: "Server Timeout",
-      error: [],
       data: [],
     });
   }
@@ -138,21 +131,18 @@ router.get("/:id",[tokenMiddleware,productMiddleware ], async function (req, res
       return res.status(400).send({
         success: false,
         message: "Product Not Found",
-        error: [],
         data: [],
       });
     }
     res.status(200).send({
       success: false,
       message: "Success",
-      error: [],
       data: product,
     });
   } catch (error) {
     res.status(500).send({
       success: false,
       message: "Server Timeout",
-      error: [],
       data: [],
     });
   }
@@ -181,7 +171,6 @@ router.post("/:id/orders",[tokenMiddleware,productMiddleware ], async function (
       return res.status(400).send({
         success: false,
         message: "Not Enough Quantity",
-        error: [],
         data: [],
       });
     }
@@ -201,14 +190,12 @@ router.post("/:id/orders",[tokenMiddleware,productMiddleware ], async function (
     res.status(200).send({
       success: true,
       message: "Success",
-      error: [],
       data: order,
     });
   } catch (error) {
     res.status(500).send({
       success: false,
       message: "Server Timeout",
-      error: [],
       data: [],
     });
   }
@@ -225,14 +212,12 @@ router.get("/:id/orders",[ tokenMiddleware,productMiddleware ], async function (
     res.status(200).send({
       success: true,
       message: "Success",
-      error: [],
       data: orders,
     });
   } catch (error) {
     res.status(500).send({
       success: false,
       message: "Server Timeout",
-      error: [],
       data: [],
     });
   }
@@ -249,14 +234,12 @@ router.get("/:id/orders",[ tokenMiddleware,productMiddleware ], async function (
     res.status(200).send({
       success: true,
       message: "Success",
-      error: [],
       data: orders,
     });
   } catch (error) {
     res.status(500).send({
       success: false,
       message: "Server Timeout",
-      error: [],
       data: [],
     });
   }
