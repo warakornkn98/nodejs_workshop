@@ -1,6 +1,3 @@
-const { jwtDecode } = require("jwt-decode");
-const jwt = require("jsonwebtoken");
-const tokenMiddleware = require("../middlewares/token.middleware.js");
 const ProductSchema = require("../models/product.model.js");
 
 module.exports = async function (req, res, next) {
@@ -35,6 +32,6 @@ module.exports = async function (req, res, next) {
     });
   }
   req.product = product;
-  console.log("productmiddleware");
+  // console.log("productmiddleware");
   next();
 };

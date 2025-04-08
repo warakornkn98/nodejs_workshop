@@ -7,6 +7,7 @@ const productSchema = new Schema(
     product_name: { type: String },
     price: { type: Number },
     quantity: { type: Number },
+    amount_of_orders: { type: Number },
   },
   {
     timestamps: true,
