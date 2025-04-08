@@ -8,23 +8,23 @@ require("dotenv").config();
 const JWT_secret = process.env.JWT_secret
 
 // Get all users
-router.get("/", async function (req, res, next) {
-  try {
-    let users = await UserSchema.find({});
+// router.get("/", async function (req, res, next) {
+//   try {
+//     let users = await UserSchema.find({});
 
-    res.status(200).send({
-      success: true,
-      message: "Success",
-      data: users,
-    });
-  } catch (error) {
-    res.status(500).send({
-      success: false,
-      message: "Server Timeout",
-      data: [],
-    });
-  }
-});
+//     res.status(200).send({
+//       status: 200,
+//       message: "Success",
+//       data: users,
+//     });
+//   } catch (error) {
+//     res.status(500).send({
+//       status: 500,
+//       message: "Server Timeout",
+//       data: [],
+//     });
+//   }
+// });
 
 // Resister a new user
 router.post("/register", async function (req, res, next) {
@@ -36,9 +36,9 @@ router.post("/register", async function (req, res, next) {
     
     if(user) {
       return res.status(400).send({
-        success: false,
+        status: 400,
         message: "User Already Exists",
-        data: [],
+        data: null,
       });
     }
 
@@ -49,16 +49,16 @@ router.post("/register", async function (req, res, next) {
 
     await user.save();
 
-    res.status(200).send({
-      success: true,
-      message: "Success",
+    res.status(201).send({
+      status: 201,
+      message: "registered successfully",
       data: user,
     });
   } catch (error) {
     res.status(500).send({
-      success: false,
+      status: 500,
       message: "Server Timeout",
-      data: [],
+      data: null,
     });
   }
 });
@@ -72,25 +72,25 @@ router.post("/login", async function (req, res, next) {
 
     if (!user) {
       return res.status(400).send({
-        success: false,
+        status: 400,
         message: "User Not Found",
-        data: [],
+        data: null,
       });
     }
 
     if (user.role == null) {
-      return res.status(400).send({
-        success: false,
+      return res.status(401).send({
+        status: 401,
         message: "User Not Approved",
-        data: [],
+        data: null,
       });
     }
 
     if (bcrypt.compareSync(password, user.password) === false) {
       return res.status(401).send({
-        success: false,
+        status: 401,
         message: "Invalid Password",
-        data: [],
+        data: null,
       });
     }
 
@@ -101,45 +101,45 @@ router.post("/login", async function (req, res, next) {
     );
 
     res.status(200).send({
-      success: true,
-      message: "Success",
-      data: [user,token],
+      status: 200,
+      message: "Login Success",
+      data: {username: user.username,token: token},
     });
   } catch (error) {
     res.status(500).send({
-      success: false,
+      status: 500,
       message: "Server Timeout",
-      data: [],
+      data: null,
     });
   }
 });
 
 // Approve user
-router.put("/:id/approve",tokenMiddleware, async function (req, res, next) {
+router.put("users/:id/approve",tokenMiddleware, async function (req, res, next) {
   let { role } = req.body;
   let { id } = req.params;
   let decode = req.decoded;
   try {
     if (decode.role !== "admin") {
       return res.status(401).send({
-        success: false,
+        status: 401,
         message: "Unauthorized",
-        data: [],
+        data: null,
       });
     }
 
     let user = await UserSchema.findByIdAndUpdate(id, { role }, { new: true });
 
     res.status(200).send({
-      success: true,
-      message: "Success",
+      status: 200,
+      message: "Approved Successfully",
       data: user,
     });
   } catch (error) {
     res.status(500).send({
-      success: false,
+      status: 500,
       message: "Server Timeout",
-      data: [],
+      data: null,
     });
   }
 });

@@ -14,15 +14,15 @@ router.get("/",tokenMiddleware, async function (req, res, next) {
     let products = await ProductSchema.find({created_by: req.decoded.username});
 
     res.status(200).send({
-      success: true,
+      status: 200,
       message: "Success",
       data: products,
     });
   } catch (error) {
     res.status(500).send({
-      success: false,
+      status: 500,
       message: "Server Timeout",
-      data: [],
+      data: null,
     });
   }
 });
@@ -33,7 +33,7 @@ router.post("/", tokenMiddleware, async function (req, res, next) {
   let decoded = req.decoded;
 
   try {
-    console.log("route add product");
+    // console.log("route add product");
     
     product = new ProductSchema({
       product_name,
@@ -45,15 +45,15 @@ router.post("/", tokenMiddleware, async function (req, res, next) {
     await product.save();
 
     res.status(200).send({
-      success: true,
-      message: "Success",
+      status: 200,
+      message: "Inserted Successfully",
       data: product,
     });
   } catch (error) {
     res.status(500).send({
-      success: false,
+      status: 500,
       message: "Server Timeout",
-      data: [],
+      data: null,
     });
   }
 });
@@ -87,15 +87,15 @@ router.put("/:id",[tokenMiddleware,productMiddleware ], async function (req, res
     );
 
     res.status(200).send({
-      success: true,
-      message: "Success",
+      status: 200,
+      message: "Updated Successfully",
       data: product,
     });
   } catch (error) {
     res.status(500).send({
       success: false,
       message: "Server Timeout",
-      data: [],
+      data: null,
     });
   }
 });
@@ -108,15 +108,15 @@ router.delete("/:id",[tokenMiddleware,productMiddleware ], async function (req, 
     let product = await ProductSchema.findByIdAndDelete(id);
 
     res.status(200).send({
-      success: true,
-      message: "Success",
+      status: 200,
+      message: "Deleted Successfully",
       data: product,
     });
   } catch (error) {
     res.status(500).send({
-      success: false,
+      status: 500,
       message: "Server Timeout",
-      data: [],
+      data: null,
     });
   }
 });
@@ -129,21 +129,21 @@ router.get("/:id",[tokenMiddleware,productMiddleware ], async function (req, res
     let product = await ProductSchema.findById(id);
     if (!product) {
       return res.status(400).send({
-        success: false,
+        status: 400,
         message: "Product Not Found",
         data: [],
       });
     }
     res.status(200).send({
-      success: false,
+      status: 200,
       message: "Success",
       data: product,
     });
   } catch (error) {
     res.status(500).send({
-      success: false,
+      status: 500,
       message: "Server Timeout",
-      data: [],
+      data: null,
     });
   }
 });
@@ -169,9 +169,9 @@ router.post("/:id/orders",[tokenMiddleware,productMiddleware ], async function (
 
     if (amount > product.quantity) {
       return res.status(400).send({
-        success: false,
+        status: 400,
         message: "Not Enough Quantity",
-        data: [],
+        data: null,
       });
     }
 
@@ -188,15 +188,15 @@ router.post("/:id/orders",[tokenMiddleware,productMiddleware ], async function (
     // console.log("order", order);
     
     res.status(200).send({
-      success: true,
+      status: 200,
       message: "Success",
       data: order,
     });
   } catch (error) {
     res.status(500).send({
-      success: false,
+      status: 500,
       message: "Server Timeout",
-      data: [],
+      data: null,
     });
   }
 });
@@ -210,15 +210,15 @@ router.get("/:id/orders",[ tokenMiddleware,productMiddleware ], async function (
     let orders = await OrderSchema.find({ product_id: id });
     
     res.status(200).send({
-      success: true,
+      status: 200,
       message: "Success",
       data: orders,
     });
   } catch (error) {
     res.status(500).send({
-      success: false,
+      status: 500,
       message: "Server Timeout",
-      data: [],
+      data: null,
     });
   }
 });
@@ -232,15 +232,15 @@ router.get("/:id/orders",[ tokenMiddleware,productMiddleware ], async function (
     let orders = await OrderSchema.find({});
     
     res.status(200).send({
-      success: true,
+      status: 200,
       message: "Success",
       data: orders,
     });
   } catch (error) {
     res.status(500).send({
-      success: false,
+      status: 500,
       message: "Server Timeout",
-      data: [],
+      data: null,
     });
   }
 });

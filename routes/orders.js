@@ -11,15 +11,15 @@ router.get("/", async function (req, res, next) {
     try{
         let orders = await OrderSchema.find({});
         res.status(200).send({
-            success: true,
+            status: 200,
             message: "Success",
             data: orders,
         });
     }catch(error){
         res.status(500).send({
-            success: false,
+            status: 500,
             message: "Server Timeout",
-            data: [],
+            data: null,
         });
     }
 });
