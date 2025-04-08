@@ -1,5 +1,6 @@
 var express = require("express");
 var router = express.Router();
+const multer = require('multer');
 var ProductSchema = require("../models/product.model.js");
 var OrderSchema = require("../models/order.model.js");
 const bcrypt = require("bcrypt");
@@ -7,8 +8,21 @@ const jwt = require("jsonwebtoken");
 const tokenMiddleware = require("../middlewares/token.middleware.js");
 const productMiddleware = require("../middlewares/product.middleware.js");
 
+
+
+const storage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    cb(null, './public/images')
+  },
+  filename: function (req, file, cb) {
+    cb(null, new Date().getTime() + '_' + file.originalname)
+  }
+})
+const upload = multer({ storage: storage })
+
 // Get all products
 router.get("/",tokenMiddleware, async function (req, res, next) {
+
   try {
     
     let products = await ProductSchema.find({created_by: req.decoded.username});
@@ -28,9 +42,10 @@ router.get("/",tokenMiddleware, async function (req, res, next) {
 });
 
 // Add a new product
-router.post("/", tokenMiddleware, async function (req, res, next) {
+router.post("/", [tokenMiddleware,upload.single("image")], async function (req, res, next) {
   let { product_name, price, quantity } = req.body;
   let decoded = req.decoded;
+  const image = req.file ? req.file.filename : null;
 
   try {
     // console.log("route add product");
@@ -38,6 +53,7 @@ router.post("/", tokenMiddleware, async function (req, res, next) {
     product = new ProductSchema({
       product_name,
       price,
+      image,
       quantity,
       created_by: decoded.username,
     });
@@ -59,10 +75,11 @@ router.post("/", tokenMiddleware, async function (req, res, next) {
 });
 
 // Update a product
-router.put("/:id",[tokenMiddleware,productMiddleware ], async function (req, res, next) {
+router.put("/:id",[tokenMiddleware,productMiddleware,upload.single("image") ], async function (req, res, next) {
   let { product_name, price, quantity } = req.body;
   let { id } = req.params;
   let decoded = req.decoded;
+  let image = req.file ? req.file.filename : null;
 
   try {
     // product = await ProductSchema.findOne({ _id: id });
@@ -80,6 +97,7 @@ router.put("/:id",[tokenMiddleware,productMiddleware ], async function (req, res
       id,
       {
         product_name,
+        image: req.file ? req.file.filename : product.image,
         price,
         quantity,
       },
