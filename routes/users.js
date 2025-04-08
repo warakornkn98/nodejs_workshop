@@ -115,7 +115,7 @@ router.post("/login", async function (req, res, next) {
 });
 
 // Approve user
-router.put("users/:id/approve",tokenMiddleware, async function (req, res, next) {
+router.put("/users/:id/approve",tokenMiddleware, async function (req, res, next) {
   let { role } = req.body;
   let { id } = req.params;
   let decode = req.decoded;
